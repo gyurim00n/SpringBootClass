@@ -1,0 +1,106 @@
+스프링부트
+1. java 21세팅
+JAVA_HOME: C:\Program Files\Java\jdk-21.0.11
+
+2. 톰캣 10점대 버전
+CATALINA_HOME: C:\Tools\apache-tomcat-10.1.57
+
+3.https://spring.io/tools#eclipse -> 5.4.0 windows X86_64 다운로드
+
+4. lombok.jar 설치
+
+5. 바로가기 
+
+6. SpringBootClass 폴더 생성
+
+7. preferences> Installed JREs jdk-21 버전 선택 
+enc >  UTF-8인지 확인
+Compiler -> 21 선택
+---------------------------
+2. Spring Boot 프로젝트 생성: sb01_jsp
+Springboot 4.1.1 + JAVA 21 + Tomcat 11.x + JSP
+						Mybatis + Oracle 사용
+spring starter project > javaversion 21로 바꾸기
+Type : 나중에 Gradle 사용.
+Group: org.doit
+Package: org.doit.ik
+ 
+-->next
+sb version : 4.1.1
+lombok 검색->lombok 선택
+spring boot Devtools, Lombok, Oracle Driver, Spring Web
+
+
+-->finish
+---------------------------------
+시스템 환경변수 ->
+SB_URL, SB_USERNAME, SB_PASSWORD
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521/XEPDB1
+spring.datasource.username=scott
+spring.datasource.password=tiger
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+
+이후 application.properties에 이거 추가:
+spring.datasource.url = ${SB_URL}
+spring.datasource.username = ${SB_USERNAME}
+spring.datasource.password = ${SB_PASSWORD}
+spring.datasource.driver-class-name = oracle.jdbc.OracleDriver
+
+--서버시작 ----
+5. http://localhost/index 요청 -> (package org.doit.ik.controller)IndexController.java -> 포워딩 index.jsp
+	1) src/main
+		webapp
+			WEB-INF
+				views
+					index.jsp
+	2)src/main/resources.
+			ㄴstatic 
+				ㄴimages, resources 폴더추가 
+
+6. http://localhost/index 요청 에러 발생
+1) jsp 지원 x -> pom.xml
+2) application.properties에 복붙:
+#viewResolver
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
+
+3)http://localhost/index 요청: ok
+
+7. Mybatis 환경 설정:application.properties
+	1) o.d.i.persistence.TimeMapper.java
+	src/main/resources폴더 
+		ㄴmappers 폴더
+			TimeMapper.xml 	매퍼파일 추가 
+
+	2) application.properties
+#mybatis
+#매퍼 파일 위치 설정
+mybatis.mapper-locations=classpath:mappers/**/*.xml
+
+이거 TimeMapper.xml에 붙여넣기:
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.mybatis.example.BlogMapper">
+
+</mapper>
+
+
+https://mybatis.org/mybatis-3/ko/getting-started.html접속
+
+8. http://localhost/server/time 요청 -> TimeController.java 
+	1) TimeConroller.java 추가
+	2) server/time.jsp 추가
+
+9. http://localhost/server/time 요청 테스트
+
+----
+
+yml 확장자 사용시 들여쓰기 중요 
+pom.xml에 코드 추가:
+      <!-- 4. 템플릿 엔진 -->
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-thymeleaf</artifactId>
+      </dependency>

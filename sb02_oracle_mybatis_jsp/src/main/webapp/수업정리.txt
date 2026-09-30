@@ -1,0 +1,42 @@
+1. sb01_jsp -> sb02_oracle_mybatis_jsp 프로젝트 복사 
+2. 프로젝트 복사 후 설정
+	1)pom.xml 
+	   <artifactId>sb02_oracle_mybatis_jsp</artifactId>
+	2)applications.properties
+		spring.application.name=sb02_oracle_mybatis_jsp
+	
+	3)o.d.i Sb01JspApplication.java
+		--> Sb02OracleMybatisJspApplication.java
+	
+3.구현
+	1) http://localhost/dept/list 요청 -> dept/list.jsp 응답
+	1-2) DeptController.java 
+	1-3) list.jsp
+	
+	2)o.d.i.domain.DeptVO.java
+	3)o.d.i.persistence.DeptMapper.java 인터페이스 
+	4) DeptMapper.xml
+	
+	5)예외 발생시 사용자 예외 페이지로 응답하기...처리.
+		- error/error.jsp 페이지 추가
+		
+	6) 처리 방법
+                    HTTP 요청
+                       ↓
+              DispatcherServlet
+                       ↓
+        ┌──────────────┼──────────────┐
+        ↓              ↓              ↓
+ DeptController   EmpController   MemberController  ...
+        │              │              │
+        └──────────────┼──────────────┘
+                       ↓
+             예외가 발생했다고 가정
+                       ↓
+              @ControllerAdvice: Spring MVC에서 여러 Controller가 공통으로 사용하는 예외 처리, 데이터 바인딩, 모델 설정 등을 한 곳에서 관리하기 위한 어노테이션
+                       ↓
+          o.d.i.exception.GlobalExceptionHandler
+                       ↓
+              @ExceptionHandler
+                       ↓
+                  error.jsp   

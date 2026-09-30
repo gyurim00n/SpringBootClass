@@ -1,0 +1,28 @@
+1. sb02_oracle_mybatis_jsp -> sb03_oracle_mybatis_thymeleaf 프로젝트 복사 
+2. 프로젝트 복사 후 설정
+	1)pom.xml 
+	   <artifactId>sb03_oracle_mybatis_thymeleaf</artifactId>
+	2)applications.properties
+		spring.application.name=sb03_oracle_mybatis_thymeleaf
+	
+	3)o.d.i Sb01JspApplication.java
+		--> Sb03OracleMybatisThymeleafApplication.java
+	
+3.application.properties -> application.yml 확장자 수정해서 설정 
+ application.yml
+   thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+4. pom.xml 
+<!-- 4. 템플릿 엔진 -->
+      <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-thymeleaf</artifactId>
+      </dependency>
+      
+5.	srs/main 폴더 안에 모두 삭제 
+	/templates/dept/list.html
+	/templates/index.html
+	/templates/error/error.html
