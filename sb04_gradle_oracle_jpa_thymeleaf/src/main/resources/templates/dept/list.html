@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title>title</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+span.material-symbols-outlined {
+	vertical-align: text-bottom;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h1 class="main">
+			<a href="#" style="position: absolute; top: 30px;">Gyur HOme</a>
+		</h1>
+		<ul>
+			<li><a href="#">로그인</a></li>
+			<li><a href="#">회원가입</a></li>
+		</ul>
+	</header>
+	<div>
+		<xmp class="code"> /dept/list.html </xmp>
+		<h1>
+			<a th:href="@{/index}">/index </a>
+		</h1>
+		<br>
+		<h1>부서 리스트</h1>
+		<table border="1" cellpadding="5" cellspacing="0">
+
+			<thead>
+				<tr>
+					<th>부서번호</th>
+					<th>부서명</th>
+					<th>위치</th>
+					<th>사원수</th>
+					<th>사원목록</th>
+
+				</tr>
+
+			</thead>
+
+			<tbody>
+
+
+				<!-- th:if thymeleaf의 조건문 -->
+				<!-- "${}" Thymeleaf의 표현식 -->
+				<!-- #lists		Thymeleaf의 유틸리티 객체: 리스트 비었나?의 유무, 갯수 등등 -->
+
+
+				<tr th:each="dept:${dList}">
+					<td th:text="${dept.deptno}"></td>
+					<td>[[${dept.dname}]]</td>
+					<td th:text="${dept.loc}"></td>
+					<td th:text="${dept.empList.size()}">0</td>
+
+
+					<td>
+						<ul>
+							<li th:if="${#lists.isEmpty(dept.empList)}">사원 존재 X</li>
+							<li th:each="emp : ${dept.empList}" th:text="${emp.ename}"></li>
+						</ul>
+					</td>
+				</tr>
+
+				<tr th:if="${#lists.isEmpty(dList)}">
+					<!-- <tr th:unless="#{lists.isEmpty(dList)}"></tr> -->
+					<td colspan="5">존재하는 부서가 없습ㄴ디ㅏ</td>
+				</tr>
+
+
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="5"><a th:href="@{/index}">Home</a>&nbsp; | &nbsp;
+						<!-- 새로운 부서 추가  --> <!-- <a href="dept/insert?dname=QC&loc=SEOUL"> INSERT </a> -->
+						<a th:href="@{/dept/insert(dname='QC',loc='SEOUL')}"> INSERT </a>&nbsp;
+						| &nbsp; <a
+						th:href="@{/dept/update(deptno=51,dname='MARKETING',loc='POHANG')}">
+							UPDATE </a>&nbsp; | &nbsp; <a th:href="@{/dept/delete(deptno=20)}">
+							DELETE </a>&nbsp; | &nbsp;</td>
+				</tr>
+			</tfoot>
+		</table>
+
+		<div>
+			<p>
+				총 부서수: <span th:text="${totalElements}"></span>
+			</p>
+			<p>
+				전체 페이지 수: <span th:text="${totalPages}"></span>
+			</p>
+			<p th:if="${prev}">이전 페이지가 있습니다.</p>
+			<p th:if="${next}">다음 페이지가 있습니다.</p>
+			<p th:unless="${next}">마지막 페이지 입니다.</p>
+		</div>
+	</div>
+	<script th:inline="javascript" th:if="${deptno != null}">
+// th:inline="javascript": 이 스크립트안에 thymeleaft 코딩을 하겠다.
+// /*[[...]]*/	:Thymeleaf Javascript 인라인 문법
+	//서버에서 rttr.addFlashAttribute("savedeptno", deptno); 으로 전달된 saveDeptno
+	//값을 타임리프가 렌더링해서 변수 deptno 할당.
+	//		/ 0  초기값.
+	
+	const deptno = /*[[${deptno}]]*/ 0;
+    alert(deptno + '번 부서 추가/수정/삭제 완료 했습니다.');
+</script>
+
+</body>
+</html>

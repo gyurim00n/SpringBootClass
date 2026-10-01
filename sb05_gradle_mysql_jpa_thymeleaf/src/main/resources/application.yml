@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: sb05_gradle_mysql_jpa_thymeleaf
+
+  sql:
+    init:
+      mode: always
+#   오라클 설정
+#  datasource:
+#    url: ${SB_URL}
+#    username: ${SB_USERNAME}
+#    password: ${SB_PASSWORD}
+#    driver-class-name: oracle.jdbc.OracleDriver
+# MySQL 설정
+  datasource:
+    url: jdbc:mysql://localhost:3306/scottdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: scott
+    password: tiger
+    driver-class-name: com.mysql.cj.jdbc.Driver 
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+#JPA 설정: Spring Boot -> JPA-> Hibernate -> Oracle
+  jpa:
+    database: oracle  # mysql     JPA에서 사용할 DBMS
+    generate-ddl: false # JPA가 DDL을 생성할 것인지 결정
+    hibernate:
+      ddl-auto: create # update(나중에 이값으로 변경) # JPA가 DDL 생성, 엔터티 (Entity) 를 기준으로 DB테이블을 어떻게 처리할 것인지 결정하는 설정값.
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl #Entity -> DB 테이블 생성될 때 실제 테이블 이름 설정
+    show-sql: true # 실행되는 SQL을 콘솔(Console)창에 출력..sql확인
+    properties: # Hibernate의 세부 속성을 직접 설정
+      hibernate:
+        format_sql: true # 실행되는 sql을 형식화 출력 (가독성 높아지게)
+        dialect: org.hibernate.dialect.MySQLDialect #Hibernate가 MySQL DB에 맞는 SQL 문법을 사용하도록 지정하는 설정. Dialect ==( DB 별로 SQL)방언
+    defer-datasource-initialization: true # jpa 초기화 된 후에 sql 초기화 작업 
+
+server:
+    port: 80

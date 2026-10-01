@@ -1,0 +1,167 @@
+1. sb04_gradle_oracle_jpa_thymeleaf 프로젝트 생성
+(sb 4.1.1 + java 21 + gradle+ JPA+ oracle_ thyemeleaf 사용 예제_
+
+2. application.properties-> yml 확장자 변경. 
+spring:
+  application:
+    name: sb04_gradle_oracle_jpa_thymeleaf		애플리케이션 이름
+
+  sql:
+    init:
+      mode: always	Spring Boot 에서 SQL 초기화 스크립트를 애플리케이션 시작할 때마다 실행하도록 설정하는 옵션
+      
+  src/main/resources/
+  	ㄴ	data.sql
+  	ㄴ schema.sql
+  	
+| 설정            | 의미                      	|
+| ------------- | ------------------------- |
+| `create`      | 기존 구조 삭제 후 새로 생성     	|
+| `update`      | 기존 구조를 유지하면서 변경     	|
+| `validate`    | 엔티티와 DB 구조가 맞는지만 검사       |
+| `none`        | Hibernate가 DB 구조를 관리하지 않음 |
+| `create-drop` | 시작 시 생성하고 종료 시 삭제         |
+
+-------------------------------------------
+application yml 설정....-
+-------------------------------------------
+spring:
+  application:
+    name: sb04_gradle_oracle_jpa_thymeleaf
+
+  sql:
+    init:
+      mode: always
+  datasource:
+    url: ${SB_URL}
+    username: ${SB_USERNAME}
+    password: ${SB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+#JPA 설정: Spring Boot -> JPA-> Hibernate -> Oracle
+  jpa:
+    database: oracle  # mysql     JPA에서 사용할 DBMS
+    generate-ddl: false # JPA가 DDL을 생성할 것인지 결정
+    hibernate:
+      ddl-auto: create # update(나중에 이값으로 변경) # JPA가 DDL 생성, 엔터티 (Entity) 를 기준으로 DB테이블을 어떻게 처리할 것인지 결정하는 설정값.
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl #Entity -> DB 테이블 생성될 때 실제 테이블 이름 설정
+    show-sql: true # 실행되는 SQL을 콘솔(Console)창에 출력..sql확인
+    properties: # Hibernate의 세부 속성을 직접 설정
+      hibernate:
+        format_sql: true # 실행되는 sql을 형식화 출력 (가독성 높아지게)
+    defer-datasource-initialization: true # jpa 초기화 된 후에 sql 초기화 작업 
+
+server:
+    port: 80
+
+---------------------------------------------------------------------
+
+2-2. 처리과정
+	Spring boot 시작
+			↓
+	Hibernate가 Entity를 확인
+			↓
+	ddl-auto: create 설정
+			↓
+	defer-datasource-initialization: true 설정
+	1)실제 테이블 생성
+			↓
+	2)data.sql 스크립트 실행
+________________________________________________________________________
+
+3.용어 정리
+	1)ORM
+		=Object-Relational Mapping(객체 관계 매핑)
+		JAVA 객체와 데이터베이스의 테이블을 자동으로 연결해 주는 기술
+				JAVA 클래스 		== Table
+			엔티티(Entity) 클래스
+	2)JPA
+	(1) Java Persistence API  
+          (2) Java의 ORM 기술 표준 
+          (3) JPA는 자바 객체(Object)와 RDBMS를 매핑(Mapping)하기 위한 인터페이스 모음이고
+            , 실제 구현체로는 Hibernate, EclipseLink, DataNucleus 등이 있습니다. 
+            가장 많이 쓰이는 구현체는 Hibernate입니다.
+          (4) Entity (엔티티) == DB의 테이블 매핑되는 클래스, @Entity
+          (5) EntityManager
+              ㄴ JPA의 핵심 인터페이스로, 엔티티를 DB에 저장하거나 조회하는 역할을 합니다.
+	3)Hibernate
+	      1. Hibernate와 JPA는 모두 자바에서 데이터베이스를 다루기 위한 기술
+	      
+	      2. JPA (Java Persistence API)
+	        1) 자바 ORM(Object-Relational Mapping) 표준 인터페이스
+	        2) 데이터베이스와 자바 객체 간 매핑을 정의하는 **명세(스펙)**
+	        3) JPA는 프레임워크가 아니라, API의 표준 정의
+	        3) @Entity, @Id, @OneToMany 같은 어노테이션 기반으로 객체-테이블 매핑을 정의
+	        4) JPQL(Java Persistence Query Language)이라는 객체 지향 쿼리 언어 사용.
+	        5) 독립적인 스펙이기 때문에, 여러 구현체가 있을 수 있다.
+	        (참고) JPA는 "규칙서"일 뿐 실제 동작하지는 않습니다.
+	        
+	      3. Hibernate
+	        1) JPA의 구현체 중 하나, 가장 널리 사용되는 오픈소스 ORM 프레임워크
+	        2) JPA의 표준을 구현 + 자체적인 고급 기능도 제공
+	        3) JPA 없이 Hibernate 단독으로도 사용 가능. 
+	        
+	      4.JPA와   Hibernate 관계
+	      -----------------------------------------------------------------------
+	      항목      JPA                           Hibernate
+	      -----------------------------------------------------------------------
+	      역할      ORM 표준 API                     ORM 프레임워크 구현체
+	      소속      Java EE (지금은 Jakarta EE)         오픈소스 (Red Hat 관리)
+	      사용    예   javax.persistence.Entity         org.hibernate.Session
+	      관계      인터페이스 (규칙)                  구현체 (실제 동작)
+	      예시      JPA는 Hibernate 외에도 EclipseLink, OpenJPA 등이 있음
+	      -----------------------------------------------------------------------  
+	      
+	 	6. Spring Boot에서는 내부적으로 Hibernate를 기본 JPA 구현체로 사용하고 있어, 
+			별도 설정이 없으면 Hibernate가 사용됩니다. 
+	4)
+4. 환경 설정
+	1)src/main/resources 폴더
+		ㄴ static 폴더
+			ㄴimages 폴더 복사 붙이기
+			ㄴ resources 폴더 복사 붙이기 
+			
+5. 테스트 
+	1) http://localhost or http://localhost/index
+	2)	o.d.i.controller.IndexController.java
+	3) index.html
+	
+	
+6. JPA 실습
+	1) o.d.i.emp 패키지 
+		ㄴEmp.java : 엔티티 클래스
+	2) o.d.i.dept 패키지 
+		ㄴDept.java : 엔티티 클래스
+		
+	1-3) dept, emp 엔티티 간의 연관 관계 설정 ***
+			1:N	***
+			1:1
+			N:M
+	1개의 부서에 여러 명의 사원이 존재할 수 있다.
+	dept, emp = 1: N
+	emp: dept = N: 1
+	(양방향 연관관계를 사용하는 이유? 
+		기준 정하는 방법: 부모가 되는 테이블
+	
+	Oracle: dept						emp
+			dpetno (primary key)		deptno(FK)
+	JPA		:								기준 연관관계 설정
+	
+7. ddl.sql 파일	
+  실행되는 이유? sql:
+			    init:
+			      mode: always
+			      
+8. dept 패키지
+	1) Dept.java: 엔티티 클래스
+	2) DeptRepository.java: DAO 인터페이스 + sql 
+	3) DeptService.java: 서비스
+	4) DeptController.java:컨트롤러
+	
+9. dept/list.html
+

@@ -12,7 +12,7 @@ spring:
 #      prefix: /WEB-INF/views/
 #      suffix: .jsp
 
-
+#cache: false 역할: 새로고침하면 저장된거 말고 늘 새거달라는 뜼
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
