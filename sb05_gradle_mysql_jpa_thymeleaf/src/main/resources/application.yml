@@ -4,7 +4,7 @@ spring:
 
   sql:
     init:
-      mode: always
+      mode: never #always
 #   오라클 설정
 #  datasource:
 #    url: ${SB_URL}
@@ -25,10 +25,10 @@ spring:
 
 #JPA 설정: Spring Boot -> JPA-> Hibernate -> Oracle
   jpa:
-    database: oracle  # mysql     JPA에서 사용할 DBMS
+    database: mysql #oracle  # mysql     JPA에서 사용할 DBMS
     generate-ddl: false # JPA가 DDL을 생성할 것인지 결정
     hibernate:
-      ddl-auto: create # update(나중에 이값으로 변경) # JPA가 DDL 생성, 엔터티 (Entity) 를 기준으로 DB테이블을 어떻게 처리할 것인지 결정하는 설정값.
+      ddl-auto: update # update(나중에 이값으로 변경) # JPA가 DDL 생성, 엔터티 (Entity) 를 기준으로 DB테이블을 어떻게 처리할 것인지 결정하는 설정값.
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl #Entity -> DB 테이블 생성될 때 실제 테이블 이름 설정
     show-sql: true # 실행되는 SQL을 콘솔(Console)창에 출력..sql확인

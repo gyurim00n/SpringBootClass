@@ -13,6 +13,18 @@
     vertical-align: text-bottom;
  }   
 </style>
+<style>    
+ .pagination li{
+   display: inline-block;
+ }
+ .pagination li.active a{
+   color: red;
+ }
+  .pagination a{
+   border: none;
+   padding: 0;
+ } 
+</style>
 </head>
 <body>
 <header>
@@ -24,10 +36,42 @@
 </header>
 <div>
   <xmp class="code"> 
-       index.html
+       guestbook/list.html
   </xmp>
- 
- <a th:href="@{/dept/list}">/dept/list</a>
+ <h1> GuestBook List Page</h1>
+ <table style="width:100%">
+ 	<thead>
+ 		<tr>
+ 			<th>#</th>
+ 			<th>Title</th>
+ 			<th>Writer</th>
+ 			<th>Regdate</th>
+ 		
+ 		</tr>
+ 	
+ 	</thead>
+ 	<tbody>
+ 		<tr th:if="${#lists.isEmpty(result.dtoList)}">
+ 			<td colspan = "4">
+ 				방명록 글이 존재하지 x
+ 			</td>
+ 		</tr>
+ 		<tr th:each="dto : ${result.dtoList}">
+ 			<th>[[${dto.gno}]]</th>
+ 			<td>[[${dto.title}]]</td>
+ 			<td>[[${dto.writer}]]</td>
+ 			<td>[[${ #temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
+ 		</tr>
+ 	
+ 	</tbody>
+ 	<tfoot>
+ 		<tr>
+ 			<td colspan="4">
+ 			1 2 3 4 5 6
+ 			</td>
+ 		</tr>
+ 	</tfoot>
+ </table>
 </div>
 </body>
 </html>

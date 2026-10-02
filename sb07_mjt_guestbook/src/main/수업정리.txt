@@ -1,0 +1,46 @@
+1. sb07_mjt_guestbook 프로젝트 생성
+	ㄴ방명록 목록 + 페이징처리 까지 구현
+	ㄴ Entity 와 DTO를 따로 만들어서 사용.
+	ㄴ방명록 CRUD  sb07_mjt_guestbook2_crud 
+	ㄴ Querydsl을 사용해서 동적으로 검색조건을 처리... sb07_mjt_guestbook3_search
+	
+
+2. application.properties 설정
+	index.html 		메인페이지
+	indexController.java
+
+3. 테스트 OK.
+___________________________________________________________________________
+
+4. 방명록 구현...
+ 프로젝트 기본 구조
+     기능          URL            Method         기능             리다이렉트 URL
+  1) 목록    /guestbook/list         GET         목록/페이징/검색
+  2) 등록    /guestbook/register     GET         입력화면
+            /guestbook/register      POST         등록처리            /guestbook/list
+  3) 조회    /guestbook/read         GET         조회화면
+  4) 수정    /guestbook/modify      GET         수정/삭제
+            /guestbook/modify      POST         수정처리            /guestbook/read
+  5) 삭제    /guestbook/remove      POST         삭제처리            /guestbook/list
+  
+ 5, o.d.i.guestbook 패키지
+ 
+ 5. o.d.i.guestbook 패키지
+   ㄴ controller
+   		ㄴ9)	GuestbookController.java
+   ㄴ dto
+   		ㄴ4)GuestbookDTO.java
+   		ㄴ5)PageRequestDTO.java
+   		ㄴ6)PageResultDTO.java	제네릭 클래스 선언
+   ㄴ entity
+   		ㄴ1)BaseEntity.java
+   		ㄴ2)Guestbook.java
+   ㄴ repository
+   		ㄴ3)GuestbookRepository.java 인터페이스
+   ㄴ service
+   		ㄴ)	GuestbookService.java	인터페이스
+   		ㄴ)	GuestbookServiceImpl.java	구현클래스 
+   
+  Sb07MjtGuestbookApplication.java에 
+   @EnableJpaAuditing	//regDate, modDate 적절한 값 설정시키는  AuditingEntityListener 활성화 역할 어노테이션  
+   추가하기. -> @ 생명주기에 따라 날짜 자동등록/업데이트

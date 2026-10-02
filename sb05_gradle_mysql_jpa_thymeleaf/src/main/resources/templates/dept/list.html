@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title>2026. 10. 1. 오후 12:11:12</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+ span.material-symbols-outlined{
+    vertical-align: text-bottom;
+ }   
+</style>
+</head>
+<body>
+<header>
+  <h1 class="main"><a href="#" style="position: absolute;top:30px;">kEnik HOme</a></h1>
+  <ul>
+    <li><a href="#">로그인</a></li>
+    <li><a href="#">회원가입</a></li>
+  </ul>
+</header>
+<div>
+  <xmp class="code"> 
+       /dept/list.html
+  </xmp>
+  
+  <h1>부서 리스트</h1>
+  
+  <table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+      <tr>
+                <th>부서번호</th>
+                <th>부서명</th>
+                <th>위치</th>
+                <th>사원수</th>
+                <th>부서명</th>      
+      </tr>
+    </thead>
+    <tbody>
+      <!-- th:if Thymeleaf의 조건문 -->
+      <!-- ${}   Thymeleaf의 표현식-->
+      <!-- #lists  Thymeleaf의 유틸리티 객체: 리스트 비어 유무, 갯수 등등 -->
+      <tr th:if="${#lists.isEmpty(dList)}">
+        <td colspan="5">존재하는 부서가 없습니다.</td>
+      </tr>
+      
+      <!-- <tr th:if="${!#lists.isEmpty(dList)}"></tr> -->
+      <!-- <tr th:unless="${#lists.isEmpty(dList)}"></tr> -->
+      <tr th:each="dept:${dList}">
+        <td th:text="${dept.deptno}"></td>
+        <td>[[${dept.dname}]]</td>
+        <td th:text="${dept.loc}"></td>
+        <td th:text="${dept.empList.size()}">0</td>
+        <td>
+           <ul>
+              <li th:if="${#lists.isEmpty(dept.empList)}">사원 존재X</li>
+              <li th:each="emp : ${dept.empList}" th:text="${emp.ename}"></li>
+           </ul>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="5" style="text-align: center">
+           <!-- [1] 페이징 블럭 출력 -->
+           <span th:each="pageNum : ${#numbers.sequence(1, totalPages)}">
+             <a th:href="@{/dept/list(page=${pageNum})}" th:text="${pageNum}"></a>
+           </span>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align: center">
+           <!-- [2] 실제 페이징 블럭  -->
+           <a th:if="${hasPreviousBlock}" th:href="@{/dept/list(page=${startPage-1})}">&lt;</a>
+           <span th:each="pageNum : ${#numbers.sequence(startPage, endPage)}">
+             <!-- pageNum == currentPage -->
+             <span th:if="${pageNum == currentPage}" th:text="'['+${pageNum}+']'"></span>
+             <!-- pageNum != currentPage -->
+             <a th:unless="${pageNum == currentPage}" th:href="@{/dept/list(page=${pageNum})}" th:text="${pageNum}"></a>
+           </span>
+           <a th:if="${hasNextBlock}" th:href="@{/dept/list(page=${endPage+1})}">&gt;</a>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="5">
+           <a th:href="@{/index}">Home</a>&nbsp;|&nbsp; 
+           <!-- 새로운 부서 추가 -->
+           <!-- <a href="/dept/insert?dname=QC&loc=SEOUL">Insert</a> -->
+           <a th:href="@{/dept/insert(dname='QC', loc='SEOUL')}">Insert</a>&nbsp;|&nbsp;
+           <a th:href="@{/dept/update(deptno=41, dname='MARKETING', loc='POHANG')}">Update</a>&nbsp;|&nbsp;
+           <a th:href="@{/dept/delete(deptno=20)}">Delete</a>&nbsp;|&nbsp;
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <div>
+    <p>총 부서 수: <span th:text="${totalElements}">0</span></p>
+    <p>전체 페이지 수: <span th:text="${totalPages}">0</span></p>
+    <p th:if="${prev}">이전 페이지가 있습니다.</p>
+    <p th:if="${next}">다음 페이지가 있습니다.</p>
+    <p th:unless="${next}">마지막 페이지입니다.</p>
+  </div>
+ 
+</div>
+
+<script th:inline="javascript" th:if="${deptno != null}">
+  // th:inline="javascript": Thymeleaf에서 JavaScript 코드 안에 서버에서 전달된 값을 넣기 위해 사용하는 기능
+  //     /*[[ ... ]]*/ : Thymeleaf JavaScript 인라인 문법
+  // 서버에서 rttr.addFlashAttribute("saveDeptno", deptno); 으로 전달된 saveDeptno
+  // 값을 라임리프가 랜더링해서 변수 deptno 할당.
+  //     / 0   Thymeleaf가 처리하지 않았을 때 사용할 기본값
+  const deptno = /*[[${deptno}]]*/ 0;
+  alert(deptno + '번 부서 추가/수정/삭제 완료!!!');
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+

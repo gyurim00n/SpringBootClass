@@ -79,3 +79,18 @@ server:
 5. 	테스트
 	IndexController.java
 	index.html 
+	
+2026.10.2(금) - Spring Boot 팀 프로젝트 주제 선정 및 주말 진행~
+수료 후~
+
+6. dept 패키지
+	emp 패키지 
+		ㄴ Emp.java 복붙.
+	util 패키지
+	
+7. templates/dept/list.html
+	templates/static/
+				ㄴimages
+				ㄴresources
+				
+8. 페이징 처리

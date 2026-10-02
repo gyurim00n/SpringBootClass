@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title>2026. 9. 30. 오후 5:14:24</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+ span.material-symbols-outlined { vertical-align: text-bottom; }   
+ #tbl_memo { border: 1px solid gray; width: 100%; }
+ a { text-decoration: none; color: black; margin: 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1 class="main"><a th:href="@{/index}" style="position: absolute;top:30px;">HOme</a></h1>
+  <ul>
+    <li><a href="#">로그인</a></li>
+    <li><a href="#">회원가입</a></li>
+  </ul>
+</header>
+<div>
+  <xmp class="code"> 
+  
+      /templates/memo/list.html 
+  
+  </xmp>
+ 
+  <h1>MEMO LIST</h1>
+  
+  <table id="tbl_memo">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>내용</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="memo : ${mList}">
+        <td th:text="${memo.mno}">mno</td>
+        <td th:text="${memo.memoText}">memoText</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+         <td colspan="2" style="text-align: center">
+           <a th:if="${hasPreviousBlock}" th:href="@{/memo/list/{pageNumber}(pageNumber=${startPage-1})}">&lt;</a>
+           <span th:each="i : ${#numbers.sequence(startPage, endPage)}">
+             <!-- pageNum == currentPage -->
+             <span th:if="${i == currentPage}" th:text="${i}" style="font-weight: bold; color: red; margin: 0 5px;"></span>
+             <!-- pageNum != currentPage -->
+             <a th:unless="${i == currentPage}" th:href="@{/memo/list/{pageNumber}(pageNumber=${i})}" th:text="${i}"></a>
+           </span>
+           <a th:if="${hasNextBlock}" th:href="@{/memo/list/{pageNumber}(pageNumber=${endPage+1})}">&gt;</a>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+          <div>
+            <span th:if="${mPage.hasPrevious()}">
+              <a th:href="@{'/memo/list/'+${currentPage-1}}">Prev</a>
+            </span>
+            <span>[[${currentPage}]] 페이지</span>
+            <span th:if="${mPage.hasNext()}">
+             <a th:href="@{/memo/list/{pageNumber}(pageNumber=${currentPage+1})}">Next</a>
+            </span>
+          </div>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  
+</div>
+</body>
+</html>
