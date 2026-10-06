@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title> title </title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+ span.material-symbols-outlined{
+    vertical-align: text-bottom;
+ }   
+</style>
+<style>    
+ .pagination li{
+   display: inline-block;
+ }
+ .pagination li.active a{
+   color: red;
+ }
+  .pagination a{
+   border: none;
+   padding: 0;
+ } 
+</style>
+</head>
+<body>
+<header>
+  <h1 class="main"><a href="#" style="position: absolute;top:30px;">Gyur HOme</a></h1>
+  <ul>
+    <li><a href="#">로그인</a></li>
+    <li><a href="#">회원가입</a></li>
+  </ul>
+</header>
+<div>
+  <xmp class="code"> 
+       guestbook/read.html
+  </xmp>
+ <h1> GuestBook Read Page</h1>
+ 
+ <form th:action="@{/guestbook/register}" method="post">
+ 	<table>
+ 		<tr>
+ 		<th>Gno</th>
+ 			<td>
+ 				<input type="text" name="gno" th:value="${dto.gno}" readonly>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>Title</th>
+ 			<td>
+ 				<input type="text" name="title" th:value="${dto.title}" readonly>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>Content</th>
+ 			<td>
+ 				<textarea rows="5" class="full" name="content" readonly>[[${dto.content}]]</textarea>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>Content</th>
+ 			<td>
+ 				<input type="text" name="writer" th:value="${dto.writer}" readonly>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>RegDate</th>
+ 			<td>
+ 				<input type="text" name="regDate" th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>ModDate</th>
+ 			<td>
+ 				<input type="text" name="modDate" th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+ 			</td>
+ 		</tr>
+ 		
+ 		<tr>
+ 			<td colspan="2" align="center">
+ 				<a th:href="@{/guestbook/modify(gno=${dto.gno},page=${requestDTO.page},type=${requestDTO.type},keyword=${requestDTO.keyword})}">
+ 					<button type="button">Modify</button>
+ 				</a>
+ 				<a th:href="@{/guestbook/list(page=${requestDTO.page},type=${requestDTO.type},keyword=${requestDTO.keyword})}">
+ 					<button type="button">List</button>
+ 				</a>
+ 			</td>
+ 		</tr>
+ 	</table>
+ 
+ </form>
+ 
+ 
+</div>
+
+<script th:inline="javascript">
+//?gno=317
+	var gno = /*[[${param.gno}]]*/ "";
+	console.log(gno);
+	if(gno){
+		//alert("[모달창]" + gno + "번 등록/수정/삭제!!");
+	}
+</script>
+</body>
+</html>

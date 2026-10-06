@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title> title </title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+ span.material-symbols-outlined{
+    vertical-align: text-bottom;
+ }   
+</style>
+<style>    
+ .pagination li{
+   display: inline-block;
+ }
+ .pagination li.active a{
+   color: red;
+ }
+  .pagination a{
+   border: none;
+   padding: 0;
+ } 
+</style>
+</head>
+<body>
+<header>
+  <h1 class="main"><a href="#" style="position: absolute;top:30px;">Gyur HOme</a></h1>
+  <ul>
+    <li><a href="#">로그인</a></li>
+    <li><a href="#">회원가입</a></li>
+  </ul>
+</header>
+<div>
+  <xmp class="code"> 
+       guestbook/modify.html
+  </xmp>
+ <h1> GuestBook Modify Page</h1>
+ 
+ <form th:action="@{/guestbook/modify}" method="post">
+ 	<!-- 수정 후 보여줄 목록 페이지 -->
+ 	<input type="hidden" name="page" th:value="${requestDTO.page}">
+ <!--
+ 	<input type="hidden" name="type" th:value="${requestDTO.type}">
+ 	<input type="hidden" name="keyword" th:value="${requestDTO.keyword}">
+ 	-->
+ 	<table>
+ 		<tr>
+ 		<th>Gno</th>
+ 			<td>
+ 				<input type="long" name="gno" th:value="${dto.gno}" readonly>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>Title</th>
+ 			<td>
+ 				<input type="text" name="title" th:value="${dto.title}" >
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>Content</th>
+ 			<td>
+ 				<textarea rows="5" class="full" name="content" >[[${dto.content}]]</textarea>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>Content</th>
+ 			<td>
+ 				<input type="text" name="writer" th:value="${dto.writer}" readonly>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>RegDate</th>
+ 			<td>
+ 			<!-- name="regDate" 이걸 없앤다. -->
+ 				<input type="text"  th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+ 				<!-- <input type="hidden" name="regDate" th:value="${dto.regDate}" readonly> -->
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>ModDate</th>
+ 			<td>
+ 			<!-- name="modDate" 이걸 없앤다. -->
+ 				<input type="text" th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+ 				<!-- <input type="hidden" name="modDate" th:value="${dto.regDate}" readonly> -->
+ 			</td>
+ 		</tr>
+ 		
+ 		<tr>
+ 			<td colspan="2" align="center">
+ 				
+ 					<button type="button" class="modifyBtn">Modify</button>
+ 				
+ 				
+ 					<button type="button" class="listBtn">List</button>
+ 				
+ 					<button type="button" class="removeBtn">REMOVe</button>
+ 			</td>
+ 		</tr>
+ 	</table>
+ 
+ </form>
+ 
+ 
+</div>
+<script th:inline="javascript">
+	var actionForm = $("form");
+	$(".modifyBtn").on("click", function(){
+		if(!confirm("수정하시겟습니까?")){
+		return;
+		}
+		
+		var pageInfo = $("input[name='page']");
+		//var type = $("input[name='type']");
+		//var keyword = $("input[name='keyword']");
+		
+		actionForm.attr({
+			"action":"/guestbook/modify",
+			"method": "post"
+			
+		})
+			.append(pageInfo)
+			//.append(type)
+			//.append(keyword)
+		.submit();
+	});
+	$(".listBtn").on("click", function(){
+		var pageInfo = $("input[name='page']");
+	    //var type = $("input[name='type']");         // 추가
+	    //var keyword = $("input[name='keyword']");   // 추가
+	    
+	    actionForm
+	         .empty()
+	         .append(pageInfo)
+	         //.append(type)      // 추가
+	         //.append(keyword)   // 추가
+	         .attr({
+	           "action":"/guestbook/list",
+	           "method":"get"
+	        })
+	        .submit();  
+		
+	});
+	$(".removeBtn").on("click", function(){
+	if(!confirm("삭제하시겠습니까?")){
+		return;
+		}
+		actionForm.attr({
+			"action":"/guestbook/remove",
+			"method": "post"
+		})
+		.submit();
+	
+	});
+</script>
+
+</body>
+</html>

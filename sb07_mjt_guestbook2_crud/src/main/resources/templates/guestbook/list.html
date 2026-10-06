@@ -38,7 +38,15 @@
   <xmp class="code"> 
        guestbook/list.html
   </xmp>
- <h1> GuestBook List Page</h1>
+ <h1> 
+ GuestBook List Page
+ 
+ <span style="float: right;">
+ 	<a th:href="@{/guestbook/register}">
+ 		<button type="button">Register </button>
+ 	</a>
+ </span>
+ </h1>
  <table style="width:100%">
  	<thead>
  		<tr>
@@ -92,5 +100,13 @@
  	</tfoot>
  </table>
 </div>
+
+<script th:inline="javascript">
+	var msg = [[${msg}]];
+	console.log(msg);
+	if(msg){
+		alert("[모달창]" + msg + "번 등록/삭제!!");
+	}
+</script>
 </body>
 </html>

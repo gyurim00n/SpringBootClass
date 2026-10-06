@@ -1,0 +1,85 @@
+1. sb08_mjt_board 프로젝트 생성
+2. static 
+	ㄴimages 폴더
+	ㄴresources 폴더
+3. index.html
+3-1. o.d.i.controller.indexController.java 복붙
+
+4. application.properties 설정 복붙..
+5. 확인? http://localhost/index
+
+6. 학습목표
+  1) JPA에서 가장 중요한 연관관계(association) 학습
+  2) 회원(member), 게시글(board), 댓글(reply) 엔티티  클래스 생성 및 처리
+    회원(m)   게시판(b)  연관관계(assosiation) 1:N 관계
+    회원(m)   댓글(r)    연관관계              1:N 관계
+    게시판(b)   댓글(r)    연관관계              1:N 관계   
+  3) Spring MVC와 JSON + @RestController 활용하는 Ajax 처리 방식 
+ 
+7. 연관관계와 관계형 데이터베이스 설계     
+  1) 1:1, 1:N, N:M 관계설정에서 가장 중요한 PK, FK 사용해서 설정.
+  2) 예
+     게시글     댓글    관계
+        1    :   N
+      PK글번호	PK 댓글번호
+      			부모PK->FK(기준으로 jpa연관 관계)
+      			@ManyToOne
+      댓글      게시글   관계
+       N     :   1 
+       
+  3) 기준:  JPA를 이용해서 연관관계를 해석할 때는 
+            PK를 기준으로 잡고, DB 모델링하는 방식으로 구성한다. 
+     예) 회원, 게시글, 댓글의 관계
+     PK 기준:    회원  게시글   1 : N
+                 게시글  댓글   1 : N
+  4) JPA는 객체 지향의 입장에서 관계를 보기 때문에 DB와 달리 다음과 같은 선택이 가능하다.
+    (1) 회원 엔티티가 게시물 엔티티들을 참조하게 설정해야 하는가?  단방향 
+    (2) 게식물 엔티티가 회원 엔티티를 참조하게 설정해야 하는가?    단방향
+    (3) 회원, 게시물 엔티티 객체 양쪽에서 서로를 참조하게 설정해야 하는가? 양방향
+    해답: 관계형 DB 모델링을 위주로 해서 구성하는 것이 편리하다. 
+          즉, 
+          FK를 사용하는 엔티티가 PK를 가진 엔티티를 참조하는 구조로 설계하면
+          DB와 동일한 구조가 되기 때문에 관계 이해가 편하고 자동으로 테이블이 생성될 때도 유용하다.                   
+                       
+          부T				자T
+          dept				EMP
+          pk(deptno			pk(empno
+          					fk(deptno)
+          					기준 jpa 연관관계
+          					@ManyToOne             
+                       
+8. 학습내용
+  1) 연관관계를 분석하고 @ManyToOne 을 이용한 연관관계 설정 방법 익힘
+  2) 연관관계가 없는 상황에서 LEFT OUTER JOIN 처리 방법
+  3) 즉시(Eager) 로딩과 지연(Lazy) 로딩의 차이와 효율적 처리 방법 이해.     
+
+9. 엔티티 클래스 추가
+	1)날짜/시간 자동 처리 설정: BaseEntity.java
+		ㄴJPA에서 공통 매핑 정보를 상속하기 위한 클래스
+		ㄴo.d.i.board.entity 패키지 
+		ㄴBaseEntity.java 복붙
+		ㄴ@EnableJpaAuditing
+			public sb09....application
+			
+	2) org.doit.ik.board.entity.Member.java
+		org.doit.ik.repository.MemberRepository.java 인터페이스
+		회원 더미데이터 추가...
+		
+	3) org.doit.ik.board.entity.Board.java 
+	org.doit.ik.repository.BoardRepository.java 인터페이스
+	
+	게시글 더미데이터 추가
+	BoardRepositoryTests
+	
+	[1] JPQL 사용..., LEFT JOIN을 사용예제 
+	4) org.doit.ik.board.entity.Reply.java
+	org.doit.ik.repository.ReplyRepository.java 인터페이스
+	org.doit.ik.repository.ReplyRepositorys.insertReply();
+	
+	
+	   Member                                    Board                                  Reply
+┌─────────┐                    ┌─────────────┐              ┌──────────┐
+│ email   │    ◀──────────        │writer_email │              │          │
+│         │           1 : N    │ bno          │   ◀──────────   │board_bno │
+└─────────┘                    └─────────────┘       1 : N   └──────────┘
+  	

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title> title </title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+ span.material-symbols-outlined{
+    vertical-align: text-bottom;
+ }   
+</style>
+<style>    
+ .pagination li{
+   display: inline-block;
+ }
+ .pagination li.active a{
+   color: red;
+ }
+  .pagination a{
+   border: none;
+   padding: 0;
+ } 
+</style>
+</head>
+<body>
+<header>
+  <h1 class="main"><a href="#" style="position: absolute;top:30px;">Gyur HOme</a></h1>
+  <ul>
+    <li><a href="#">로그인</a></li>
+    <li><a href="#">회원가입</a></li>
+  </ul>
+</header>
+<div>
+  <xmp class="code"> 
+       guestbook/register.html
+  </xmp>
+ <h1> GuestBook Register Page</h1>
+ 
+ <form th:action="@{/guestbook/register}" method="post">
+ 	<table>
+ 		<tr>
+ 			<th>Title</th>
+ 			<td>
+ 				<input type="text" name="title" placeholder="Enter Title" class="full">
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>Content</th>
+ 			<td>
+ 				<textarea rows="5" name="content" class="full"></textarea>
+ 			</td>
+ 		</tr>
+ 		<tr>
+ 			<th>Writer</th>
+ 			<td>
+ 				<input type="text" name="writer" placeholder="Enter Writer" class="long">
+ 			</td>
+ 		</tr>
+ 		
+ 		<tr>
+ 			<td colspan="2" align="center">
+ 				<button type="submit">Save</button>
+ 				<!-- 쓰기 취소 시 목록으로 이동 -->
+ 				<a th:href="@{/guestbook/list(page=1)}">
+ 					<button type="button">Cancel</button>
+ 				</a>
+ 			</td>
+ 		</tr>
+ 	</table>
+ 
+ </form>
+ 
+ 
+</div>
+</body>
+</html>
