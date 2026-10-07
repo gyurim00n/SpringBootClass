@@ -1,0 +1,48 @@
+1. sb08_mjt_board2_search 프로젝트 복제함
+1-1. 	  application.properties
+	, sb08mjtboardsearchapplicationjava 이름 바꾸기
+	, build.gradle 수정
+	
+2.JQPL 검색
+ㄴFK를 이용해서 @ManyToOne 연관관계가 잇을 경우 가장 어려운 작업은
+	검색에 필요한 JPQL을 구성하는 것이다.
+ㄴ Object [] 타입...
+ㄴ 단일 엔터티가 아니므로 Querydsl에서 필요한 쿼리를 직접 동적으로 실행할 수 있는 구조가 필요하다...
+ㄴ[Repository를 확장해서] JPQLQuery 객체를 이용해서 직접 JPQL구문을 생성해서 처리...
+
+3. Querydsl 설정
+
+	1)build.gradle : Gradle> Refresh Gradle Project (꼭 해줘야함!!)
+	configurations {
+	   compileOnly {
+	      extendsFrom annotationProcessor
+	   }
+	}
+	추가.
+	// 1. QueryDSL Q-Class 생성에 필요
+	   implementation "com.querydsl:querydsl-jpa:5.1.0:jakarta"
+	    annotationProcessor "com.querydsl:querydsl-apt:5.1.0:jakarta"
+	    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+	    annotationProcessor 'jakarta.annotation:jakarta.annotation-api' 
+
+4. Q클래스 생성
+
+5. Repository를 확장하는 방법...
+  1) 단계: 쿼리 메서드나 @Query 등으로 처리할 수 없는 기능은 [별도의 인터페이스]로 설계   
+  2) 단계: 별도의 인터페이스에 대한 [구현 클래스를 작성]한다. 이 때 QuerydslRepositorySupport 클래스 상속    
+  3) 단계: 구현 클래스에 인터페이스의 기능을 Q도메인 클래스와 JPQLQuery를 이용해서 구현
+
+ 5-2. 실제 적용해서 구현...
+ 	1) org.doit.ik.board.repository.search.SearchBoardRepository 인터페이스 추가
+ 	2) org.doit.ik.board.repository.search.SearchBoardRepositoryImpl 인터페이스 추가
+ 		+) extends QuerydslRepositorySupport implements SearchBoardRepository
+ 	3) BoardRepositoryy -> extends SearchBoardRepository 추가.
+ 	
+ 5-3) list.html 검색 부분 추가..
+ 
+ 6. BoardServiceImpl.java 수정....
+ [ 참고 ] 복잡한 쿼리(조인, 서브쿼리, 동적 쿼리)를 사용하는 Querydsl 적용 방법
+1) 기존 코드 방식   : QuerydslRepositorySupport 사용 
+                    ㄴ from(), getQuerydsl()메소드 사용
+2) 최근 추천되는 방식: JPAQueryFactory 사용.  ( 권장 )   
+ 	

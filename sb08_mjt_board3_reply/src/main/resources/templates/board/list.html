@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title> title </title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+ span.material-symbols-outlined{
+    vertical-align: text-bottom;
+ }   
+</style>
+<style>    
+ .pagination li{
+   display: inline-block;
+ }
+ .pagination li.active a{
+   color: red;
+ }
+ .pagination li  a{
+   border: none;
+   padding: 0;
+ }
+</style>
+</head>
+<body>
+<header>
+  <h1 class="main"><a href="#" style="position: absolute;top:30px;">Gyur HOme</a></h1>
+  <ul>
+    <li><a href="#">로그인</a></li>
+    <li><a href="#">회원가입</a></li>
+  </ul>
+</header>
+<div>
+  <xmp class="code"> 
+       /board/list.html
+  </xmp>
+ 	<h1> 	BOARD LIST PAGE
+	 	 <span style="float: right;">
+		 	<a th:href="@{/board/register}">
+		 		<button type="button">Register </button>
+		 	</a>
+		 </span>
+ 	</h1>
+ 	
+ 	<table style="width:100%" border="1">
+	 	<colgroup>
+	      <col style="width: 10%;">
+	      <col style="width: 50%;">
+	      <col style="width: 25%;">
+	      <col style="width: 15%;">
+	    </colgroup>
+ 		<caption></caption>
+ 		<thead>
+ 			<tr>
+		        <td>#</td>
+		        <th>Title</th>
+		        <th>Writer</th>
+		        <th>Regdate</th>
+		      </tr>
+ 		</thead>
+ 		<tbody>
+	 		<tr th:if="${#lists.isEmpty(result.dtoList)}">
+	 			<td colspan = "4">
+	 				게시글 글이 존재하지 x
+	 			</td>
+	 		</tr>
+	 		<tr th:each="dto : ${result.dtoList}">
+	 			<th>
+	 				<a th:href="@{/board/read(bno=${dto.bno},page=${result.page},size=${result.size},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}">[[${dto.bno}]]</a>
+	 			</th>
+	 			<td>
+	 				[[${dto.title}]]
+	 				<span class="badge right red" th:text="${dto.replyCount}"></span>
+	 			</td>
+	 			<td>[[${dto.writerName}]] ( <small>[[${dto.writerEmail}]]</small> ) </td>
+	 			<td>[[${ #temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
+	 		</tr>
+	 	
+	 	</tbody>
+ 		<tfoot>
+ 			<tr>
+		         <td colspan="4" align="center">
+		           <form action="/board/list" method="get" id="searchForm">
+		              <div>  
+		                <input type="hidden" name="page" value="1">           
+		                <div>
+		                  <select name="type">
+		                    <option th:selected="${pageRequestDTO.type == null}">-----</option>
+		                    <option th:selected="${pageRequestDTO.type == 't'}" value="t">제목</option>
+		                    <option th:selected="${pageRequestDTO.type == 'c'}" value="c">내용</option>
+		                    <option th:selected="${pageRequestDTO.type == 'w'}" value="w">작성자</option>
+		                    <option th:selected="${pageRequestDTO.type == 'tc'}" value="tc">제목+내용</option>
+		                    <option th:selected="${pageRequestDTO.type == 'tcw'}" value="tcw">제목+내용+작성자</option>
+		                  </select>          
+		                  <input name="keyword" th:value="${pageRequestDTO.keyword}">
+		                  <button class="btn-search" type="submit">Search</button>
+		                  <button class="btn-clear" type="button">Clear</button>
+		                </div>
+		              </div>
+		            </form>         
+		         </td>
+       		</tr>
+	 		<tr>
+	 		<!-- ,type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword} -->
+	 			<td colspan="4" style="text-align: center;">
+	 			<ul class="pagination">
+	 				<li th:if="${result.prev}">
+	 					<a th:href="@{/board/list(page=${result.start-1},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}">Prev</a>
+	 				</li>
+	 				
+	 				<li th:each="page : ${result.pageList}"
+	 					th:class="'page-item ' + ${result.page== page ? 'active': ''}"
+	 				>
+	 					<a th:href="@{/board/list(page=${page},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}">[[${page}]]</a>
+	 				</li>
+	 				
+	 				<li th:if="${result.next}">
+	 					<a th:href="@{/board/list(page=${result.end+1},type=${pageRequestDTO.type},keyword=${pageRequestDTO.keyword})}">Next</a>
+	 				</li>
+	 			</ul>
+	 			
+	 			</td>
+	 		</tr>
+ 		</tfoot>
+ 	</table>
+</div>
+
+<script th:inline="javascript">
+  var msg = [[${msg}]];
+  console.log(msg);
+  if(msg){
+     alert("[모달창]"+ msg + "번 글 등록/삭제!!!");
+  }
+</script>
+</body>
+</html>

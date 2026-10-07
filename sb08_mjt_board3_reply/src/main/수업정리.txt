@@ -1,0 +1,54 @@
+1. sb08_mjt_board3_reply 프로젝트 복제함
+
+2. 댓글 처리(Ajax) + @RestConroller.java + JSON: Rest 방식..
+  -------------------------------------------------------------------------------------
+  방식      호출URL               		파라미터            기능   		반환값
+  -------------------------------------------------------------------------------------
+  GET      /replies/board/{bno}   게시물번호            댓글 조회   JSON배열  [{},{}]
+  POST     /replies/              JSON 댓글 데이터      댓글 추가   댓글번호
+  DELETE   /replies/{rno}         댓글 번호            삭제 삭제결과문자열  
+  PUT      /replies/{rno}         댓글번호 + 수정할 내용  수정 수정결과문자열
+  -------------------------------------------------------------------------------------
+  
+  3. 구현
+  1) Reply 엔티티
+  	@ManyToOne(fetch = FetchType.LAZY)		지연로딩으로 설정...
+	@ToString.Exclude						toString() 제외	
+	private Board board;
+  
+  2) ReplyRepository 수정...
+  	//게시글의 댓글 목록을 조회
+  	List<Reply> getRepliesByBoardOrderByRno(Board board);
+  2-2) 단위 테스트
+  
+  3)ReplyDTO / ReplyService, Impl / ReplyController 추가...
+  	1) ReplyDTO 생성 (BoardDTO 복사해옴)
+	  	@Data
+		@Builder
+		@AllArgsConstructor
+		@NoArgsConstructor
+		
+		public class ReplyDTO {
+			
+			private Long rno;
+			private String text;
+			private String replyer;
+			private Long bno;
+			private LocalDateTime regDate;
+			private LocalDateTime modDate;
+
+		}
+	2) ReplyService, ReplyServiceImpl 생성
+		getList() 메서드 구현...
+		
+	3)ReplyController 추가
+		@GetMapping(value="/board/{bno}", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<List<ReplyDTO>> getListBoard(@PathVariable("bno") Long bno) {
+			log.info("😘😘 ReplyController.getListBoard()...bno" + bno);
+			List<ReplyDTO> result = this.replyService.getList(bno);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		}
+		
+	4) read.html 댓글목록 출력 부분 추가.
+	
+	

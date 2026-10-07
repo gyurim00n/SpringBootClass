@@ -1,5 +1,6 @@
 package org.doit.ik;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import org.doit.ik.board.entity.Board;
@@ -42,4 +43,15 @@ class ReplyRepositoryTests {
       
    }
     
+   @Test
+   void testGetRepliesByBoardOrderByRno() {
+	   Board board = Board.builder().bno(50L).build();
+	   List<Reply> result = this.replyRepository.getRepliesByBoardOrderByRno(board);
+	   System.out.println("-------------------------------------");
+	   result.forEach(reply -> {
+		   
+		   System.out.println("😍😍"+ reply);
+	   });
+	   System.out.println("-------------------------------------");
+   }
 }

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title>title</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+span.material-symbols-outlined {
+	vertical-align: text-bottom;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h1 class="main">
+			<a href="#" style="position: absolute; top: 30px;">Gyur HOme</a>
+		</h1>
+		<ul>
+			<li><a href="#">로그인</a></li>
+			<li><a href="#">회원가입</a></li>
+		</ul>
+	</header>
+	<div>
+		<xmp class="code"> /board/read.html </xmp>
+		<h1>BOARD READ PAGE</h1>
+
+		
+			<table>
+				<tr>
+					<th><label for="bno">Bno</label></th>
+					<td><input type="text" id="bno" name="bno"
+						readonly th:value="${dto.bno}"></td>
+				</tr>
+				<tr>
+					<th><label for="title">Title</label></th>
+					<td><input type="text" id="title" name="title"
+						 class="full" th:value="${dto.title}" readonly></td>
+				</tr>
+
+				<tr>
+					<th><label for="content">Content</label></th>
+					<td><textarea id="content" rows="5" name="content"
+							class="full" readonly> [[${dto.content}]]</textarea></td>
+				</tr>
+
+				<tr>
+					<th><label for="writer">Writer</label></th>
+					<td><input type="text" id="writer" name="writer"
+						 class="long" th:value="${dto.writerName}"></td>
+				</tr>
+
+				<tr>
+			       <th>
+			         <label>RegDate</label>
+			       </th>
+			       <td>
+			         <input type="text"
+			                name="regDate"
+			                readonly
+			                th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}">
+			       </td>
+			     </tr>
+			   
+			     <tr>
+			       <th>
+			         <label>ModDate</label>
+			       </th>
+			       <td>
+			         <input type="text"
+			                name="modDate"
+			                readonly
+			                th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}">
+			       </td>
+			     </tr>
+			     <tr>
+				     <td colspan="2" align="center">
+				     	<a th:href="@{/board/modify(
+						             bno=${dto.bno},
+						             page=${requestDTO.page},
+						             type=${requestDTO.type},
+						             keyword=${requestDTO.keyword}
+						         )}">
+				     		<button type="button">Modify</button>
+				     	</a>
+				     	<a th:href="@{/board/list(
+						             page=${requestDTO.page},
+						             type=${requestDTO.type},
+						             keyword=${requestDTO.keyword}
+						         )}">
+				     		<button type="button">List</button>
+				     	</a>
+				     </td>
+			     </tr>
+			</table>
+			
+			<!-- 해당 게시글의 댓글 정보를 화면에 출력할 부분 -->
+		  <div>
+		      <div>
+		        <h5><span class="addReply">Add Reply</span></h5>
+		        <h5><span class="replyCount">Reply Count : [[${dto.replyCount}]]</span></h5>
+		        (댓글수를 클릭하면 댓글 목록이 보여요~)
+		      </div>
+		      <!-- 해당 게시글의 댓글 정보를  ajax 가져와서 출력 -->
+		      <div class="replyList" style="border:1px solid blue;padding: 10px;">
+		      </div>
+		   </div>
+			
+			
+	</div>
+<script th:inline="javascript">
+	$(function(){
+		//해당 게시글 번호: bno ${dto.bno}
+		var bno = [[${dto.bno}]];
+		
+		//댓글목록 출력 div
+		var listGroup = $(".replyList");
+		
+		//날짜 처리 함수
+		function formatTime(str){
+          var date = new Date(str);
+          return date.getFullYear()+"/"+(date.getMonth()+1)+"/"+date.getDate()+" " + date.getHours()+":"+date.getMinutes();
+      	} // function formatTime
+		
+		function loadJSONData(){
+          // $.ajax()  jquery 메서드만 사용. 
+          $.getJSON('/replies/board/'+bno, function (arr){
+            // console.log( arr );
+            var str = "";
+            $(".replyCount").html(" Reply Count : " + arr.length);
+            $.each(arr, function (idx, reply){
+              console.log(reply);
+              str += '  <div class="card-body" data-rno="'+reply.rno+'"><b>'+reply.rno+'</b>';
+              str += '    <h5 class="card-title">'+reply.text+'</h5>';
+              str += '    <h6 class="card-subtitle">'+reply.replyer+'</h6>';
+              str += '    <p>'+formatTime(reply.regDate)+'</p>';
+              str += '  </div>';
+            }); // $.each(
+            
+            listGroup.html(str);
+             
+          }); // $.getJSON('
+        } // function loadJSONData(){
+		
+		//[1] 댓글 수 클릭시 댓글목록을 조회 처리...
+		$(".replyCount").on("click", function(){
+			
+			loadJSONData(); 
+		
+		});
+	}); //$(function(){
+</script>
+
+<script th:inline="javascript">
+  var msg = [[${msg}]];
+  console.log(msg);
+  if(msg){
+     alert("[모달창]"+ msg + "번 글 수정!!!");
+  }
+</script>	
+</body>
+</html>

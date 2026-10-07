@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title>title</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+span.material-symbols-outlined {
+	vertical-align: text-bottom;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h1 class="main">
+			<a href="#" style="position: absolute; top: 30px;">Gyur HOme</a>
+		</h1>
+		<ul>
+			<li><a href="#">로그인</a></li>
+			<li><a href="#">회원가입</a></li>
+		</ul>
+	</header>
+	<div>
+		<xmp class="code"> /board/modify.html </xmp>
+		<h1>BOARD MODIFY PAGE</h1>
+
+		<form th:action="@{/board/modify}" method="post">
+			<input type="hidden" name="page" th:value="${requestDTO.page}">
+		    <input type="hidden" name="type" th:value="${requestDTO.type}">
+		    <input type="hidden" name="keyword" th:value="${requestDTO.keyword}">
+			<table>
+				<tr>
+					<th><label for="bno">Bno</label></th>
+					<td>
+						<input type="long" id="bno"
+							name="bno"
+							th:value="${dto.bno}"
+							readonly>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="title">Title</label></th>
+					<td>
+						<input type="text" 
+						id="title" 
+						name="title"
+						placeholder="Enter Title" 
+						th:value="${dto.title}" 
+						class="full">
+					</td>
+				</tr>
+
+				<tr>
+					<th><label for="content">Content</label></th>
+					<td>
+						<textarea id="content" 
+						rows="5" 
+						name="content" 
+						class="full">[[${dto.content}]]
+						</textarea>
+					</td>
+				</tr>
+
+				<tr>
+					<th><label for="writer">Writer</label></th>
+					<td><input type="text" 
+						id="writer" 
+						name="writer"
+						class="long" 
+						th:value="${dto.writerName}" 
+						readonly></td>
+				</tr>
+				<tr>
+					<!--name 속성 X  -->
+			       <th>
+			         <label>RegDate</label>
+			       </th>
+			       <td>
+			         <input type="text"
+			                readonly
+			                th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}">
+			       </td>
+			     </tr>
+			   
+			     <tr>
+			       <th>
+			         <label>ModDate</label>
+			       </th>
+			       <td>
+			         <input type="text"
+			                readonly
+			                th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}">
+			       </td>
+			     </tr>
+			   
+			     <tr>
+			       <td colspan="2" align="center">
+			         <button type="button" class="modifyBtn">Modify</button>
+			         <button type="button" class="listBtn">List</button>
+			         <button type="button" class="removeBtn">Remove</button>
+			       </td>
+			    </tr>
+				
+			</table>
+		</form>
+	</div>
+<script th:inline="javascript">
+	var actionForm =$("form");
+	$(".modifyBtn").on("click", function(){
+	
+		if(!confirm("수정하시겠습니까?")){ return; }
+		actionForm.attr({
+			"action" : "/board/modify",
+			"method" : "post"
+		}).submit();
+	});
+	
+	$(".listBtn").on("click", function(){
+			var page = $("input[name='page']");
+	        var type = $("input[name='type']");
+	        var keyword = $("input[name='keyword']");
+	        
+	        actionForm.empty();
+	        
+	        actionForm.append(page);
+	        actionForm.append(type);
+	        actionForm.append(keyword);
+	        
+	        actionForm
+	          .attr({
+	                 "action":"/board/list"
+	               , "method":"get"
+	          })
+	          .submit();
+	
+	});
+	
+	$(".removeBtn").on("click", function(){
+		if(!confirm("정말 삭제하시겠습니까?")){ return; }
+		actionForm.attr({
+			"action" : "/board/remove",
+			"method" : "post"
+		}).submit();
+	
+	});
+</script>
+</body>
+</html>

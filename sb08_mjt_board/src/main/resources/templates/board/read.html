@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title>title</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+span.material-symbols-outlined {
+	vertical-align: text-bottom;
+}
+</style>
+</head>
+<body>
+	<header>
+		<h1 class="main">
+			<a href="#" style="position: absolute; top: 30px;">Gyur HOme</a>
+		</h1>
+		<ul>
+			<li><a href="#">로그인</a></li>
+			<li><a href="#">회원가입</a></li>
+		</ul>
+	</header>
+	<div>
+		<xmp class="code"> /board/read.html </xmp>
+		<h1>BOARD READ PAGE</h1>
+
+		
+			<table>
+				<tr>
+					<th><label for="bno">Bno</label></th>
+					<td><input type="text" id="bno" name="bno"
+						readonly th:value="${dto.bno}"></td>
+				</tr>
+				<tr>
+					<th><label for="title">Title</label></th>
+					<td><input type="text" id="title" name="title"
+						 class="full" th:value="${dto.title}" readonly></td>
+				</tr>
+
+				<tr>
+					<th><label for="content">Content</label></th>
+					<td><textarea id="content" rows="5" name="content"
+							class="full" readonly> [[${dto.content}]]</textarea></td>
+				</tr>
+
+				<tr>
+					<th><label for="writer">Writer</label></th>
+					<td><input type="text" id="writer" name="writer"
+						 class="long" th:value="${dto.writerName}"></td>
+				</tr>
+
+				<tr>
+			       <th>
+			         <label>RegDate</label>
+			       </th>
+			       <td>
+			         <input type="text"
+			                name="regDate"
+			                readonly
+			                th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}">
+			       </td>
+			     </tr>
+			   
+			     <tr>
+			       <th>
+			         <label>ModDate</label>
+			       </th>
+			       <td>
+			         <input type="text"
+			                name="modDate"
+			                readonly
+			                th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}">
+			       </td>
+			     </tr>
+			     <tr>
+				     <td colspan="2" align="center">
+				     	<a th:href="@{/board/modify(
+						             bno=${dto.bno},
+						             page=${requestDTO.page},
+						             type=${requestDTO.type},
+						             keyword=${requestDTO.keyword}
+						         )}">
+				     		<button type="button">Modify</button>
+				     	</a>
+				     	<a th:href="@{/board/list(
+						             page=${requestDTO.page},
+						             type=${requestDTO.type},
+						             keyword=${requestDTO.keyword}
+						         )}">
+				     		<button type="button">List</button>
+				     	</a>
+				     </td>
+			     </tr>
+			</table>
+		
+	</div>
+	
+<script th:inline="javascript">
+  var msg = [[${msg}]];
+  console.log(msg);
+  if(msg){
+     alert("[모달창]"+ msg + "번 글 수정!!!");
+  }
+</script>	
+</body>
+</html>
