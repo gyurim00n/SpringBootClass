@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon" href="/images/SiSt.ico">
+<title>2026. 10. 8. 오전 11:29:28</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/resources/cdn-main/example.css">
+<script src="/resources/cdn-main/example.js"></script>
+<style>
+ span.material-symbols-outlined{
+    vertical-align: text-bottom;
+ }   
+</style>
+</head>
+<body>
+<header>
+  <h1 class="main"><a href="#" style="position: absolute;top:30px;">kEnik HOme</a></h1>
+  <ul>
+    <li><a href="#">로그인</a></li>
+    <li><a href="#">회원가입</a></li>
+  </ul>
+</header>
+<div>
+  <xmp class="code"> 
+       uploadEx.html
+  </xmp>
+ 
+   <h1>Spring Boot - Ajax로 파일 업로드 처리</h1>
+   
+   <input type="file" name="uploadFiles" multiple="multiple">
+   <br>   
+   <button type="button" class="uploadBtn">Upload</button>   
+   <div class="uploadResult">
+   </div>
+ 
+</div>
+
+<script th:inline="javascript">
+  function showUploadImages(arr){
+     var divArea = $(".uploadResult");
+     
+     for( var i=0; i< arr.length; i++ ){
+       console.log( arr[i] );
+     
+       var str = "";  
+       str +="<div style='border:solid 1px gray'>";
+       str +="  <img src='/display?fileName="+arr[i].thumbnailURL+"'>"; 
+       str +="  <button class='removeBtn' data-name='"+arr[i].imageURL+"'>REMOVE</button>";        
+       str +="</div>"; 
+               
+       divArea.append( str );   
+     }// for
+      
+  } 
+
+  $(".uploadBtn").on("click", function (){
+    var inputFile = $("input[type='file']");
+    var files = inputFile[0].files;
+    // console.log( files );
+    
+    var formData = new FormData();
+    for( var i = 0 ; i < files.length; i++ ){
+      formData.append("uploadFiles", files[i]);
+    } // for
+    
+    //
+    $.ajax({
+       url: '/uploadAjax', 
+       processData: false,
+       contentType: false,
+       data: formData, 
+       type: 'POST', 
+       dataType: 'json', 
+       success: function (result){
+          console.log(result);
+          showUploadImages(result);
+       }, 
+       error: function (jqXHR, textStatus, errorThrown){
+          console.log(textStatus);
+       }
+    });
+  });
+  
+  //
+   $(".uploadResult").on("click", ".removeBtn", function (){
+     var target = $(this);
+     
+     // data-name='"+arr[i].imageURL
+     var fileName = target.data("name");
+     
+     // 삭제 버튼의 부모 div 
+     var targetDiv = $(this).closest("div");
+     
+     // 서버에 가서 이미지 삭제 + targetDiv 삭제
+     $.post(
+        '/removeFile',
+        {
+          fileName: fileName
+        }, 
+        function (result){
+           // 서버 이미지 삭제 하고 result 응답..
+           console.log(result);
+           if( result === true ){
+             targetDiv.remove();// 
+           } // if
+        }
+     );
+   });
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

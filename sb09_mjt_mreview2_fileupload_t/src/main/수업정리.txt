@@ -1,0 +1,127 @@
+1. sb09_mjt_mreview2_fileupload 프로젝트 CV
+
+2. 수정
+   settings.gradle: rootProject.name = 'sb09_mjt_mreview2_fileupload'
+   application.properties: spring.application.name=sb09_mjt_mreview2_fileupload
+   Sb09MjtMreview2FileuploadApplication.java   
+
+3. 테스트  확인~
+
+4. 스프링에서 파일 업로드 ( 레거시, 부트 동일하다 .)
+  1) Servlet 3.0 이상 자체적으로 파일업로드 라이브러리를 이용하는 방식.
+  2) 별도의 라이브러리( commons-fileupload 등 ) 이용하는 방식.
+
+5. 이번 프로젝트에서는 
+  1) Servlet 3.0 이상 자체적으로 파일업로드 라이브러리
+  2) 섬네일 처리..
+
+6. 파일 업로드를 위한 설정...
+ 1) application.properties   
+		#
+		spring.servlet.multipart.enabled=true			: 파일 업로드 가능 여부
+		spring.servlet.multipart.location=C:\\upload	: 업로드된 파일의 임시 저장 경로
+		spring.servlet.multipart.max-request-size=30MB	: 한 번에 최대 업로드 가능 용량
+		spring.servlet.multipart.max-file-size=10MB		: 파일 하나의 최대 크기
+		
+		#
+		org.doit.upload.path=C:\\upload 
+ 2) 섬네일 처리 build.gradle
+implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.21' 		 
+
+7. 파일 업로드를 위한 컨트롤러 + 화면처리(html) 
+  1) 파일 업로드와 관련된 모든 작업은 Ajax 방식으로 처리
+  2) 모든 업로드 결과는 JSON 형태로 제공.
+  3) o.d.i.mreview.controller.UploadController.java
+@Value("${org.doit.upload.path}")
+	private String uploadPath;
+	
+	private String makeFolder() {
+		String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+		String folderPath = str.replace("/", File.separator);
+
+		File uploadPathFolder = new File(uploadPath, folderPath);
+
+		if (uploadPathFolder.exists() == false) {
+			uploadPathFolder.mkdirs();
+		}
+		return folderPath;
+	}
+	
+	@PostMapping("/uploadAjax")
+	public ResponseEntity<List<UploadResultDTO>> uploadFile(
+		@RequestParam("uploadFiles") MultipartFile [] uploadFiles) {
+		 
+		return null;
+	}  
+  4) o.d.i.mreview.dto.UploadResultDTO.java
+public class UploadResultDTO {
+	
+	// 업로드된 원래 파일이름
+	private String fileName;
+	
+	// 파일의 UUID값
+	private String uuid;
+	
+	// 업로드된 파일의 저장 경로
+	private String folderPath;
+	
+	//
+	public String getImageURL() {
+		try {
+			return  URLEncoder.encode(this.folderPath+"/"+uuid+"_"+this.fileName, "UTF-8");
+		} catch (UnsupportedEncodingException e) { 
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	public String getThumbnailURL() {
+		try {
+			return  URLEncoder.encode(this.folderPath+"/s_"+uuid+"_"+this.fileName, "UTF-8");
+		} catch (UnsupportedEncodingException e) { 
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+}  
+  5) uploadEx.html
+<script th:inline="javascript">
+  $(".uploadBtn").on("click", function (){
+    var inputFile = $("input[type='file']");
+    var files = inputFile[0].files;
+    // console.log( files );
+    
+    var formData = new FormData();
+    for( var i = 0 ; i < files.length; i++ ){
+      formData.append("uploadFiles", files[i]);
+    } // for
+    
+    //
+    $.ajax({
+       url: '/uploadAjax', 
+       type: 'POST', 
+       processData: false,
+       contentType: false,
+       data: formData, 
+       dataType: 'json', 
+       success: function (result){
+          console.log(result);
+       }, 
+       error: function (jqXHR, textStatus, errorThrown){
+          console.log(textStatus);
+       }
+    });
+  });
+</script>  
+
+
+
+
+
+
+
+
+
+
+                             

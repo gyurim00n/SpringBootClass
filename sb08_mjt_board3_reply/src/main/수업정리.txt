@@ -1,5 +1,7 @@
 1. sb08_mjt_board3_reply 프로젝트 복제함
-
+	회원+게시판+ 댓글 엔티티
+	연관관계 1:N
+	*** 댓글: JSON + ajax + @RestController ***
 2. 댓글 처리(Ajax) + @RestConroller.java + JSON: Rest 방식..
   -------------------------------------------------------------------------------------
   방식      호출URL               		파라미터            기능   		반환값
@@ -51,4 +53,15 @@
 		
 	4) read.html 댓글목록 출력 부분 추가.
 	
-	
+	---2026 10 08---
+	5) 댓글 추가 구현...
+		 (1)모달창 ...
+		 read.html js 코딩
+		 (3)ReplyService, ReplyServiceImpl register() 구현 확인
+		 (2)RestContorller. 댓글 추가하는 컨트롤러 메서드 선언
+		 
+	6) 댓글 삭제 구현...
+		(1) read.html : 삭제할 댓글에 해다하는 div 태그 추력
+	//(4)서비스
+		//(5)컨트롤러 메서드
+		 

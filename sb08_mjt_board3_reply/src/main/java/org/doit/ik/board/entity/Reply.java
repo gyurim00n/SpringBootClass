@@ -32,4 +32,12 @@ public class Reply extends BaseEntity{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@ToString.Exclude
 	private Board board;
+	
+	public void changeText(String text) {
+		this.text = text;
+	}
+
+	public void changeReplyer(String replyer) {
+		this.replyer = replyer;
+	}
 }

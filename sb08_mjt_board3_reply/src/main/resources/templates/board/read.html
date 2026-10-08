@@ -10,8 +10,108 @@
 <link rel="stylesheet" href="/resources/cdn-main/example.css">
 <script src="/resources/cdn-main/example.js"></script>
 <style>
+/* 모달창 */
+.modal {
+    display: none;
+
+    position: fixed;
+    z-index: 1000;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.modal-content {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 450px;
+
+    padding: 25px;
+
+    background: white;
+
+    border-radius: 12px;
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+    box-sizing: border-box;
+}
+</style>
+<style>
 span.material-symbols-outlined {
 	vertical-align: text-bottom;
+}
+</style>
+<style>
+   .replyCount {
+       cursor: pointer;       /* 마우스를 올리면 손 모양 */
+   }
+   
+   .replyCount:hover {
+       color: red;            /* 마우스를 올리면 글자색 변경 */
+   }
+</style>
+<style>
+.reply-item {
+    margin-bottom: 12px;
+    padding: 18px 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+/* 마우스를 올렸을 때 */
+.reply-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.10);
+    border-color: #b8c7ff;
+}
+
+/* 댓글 번호 + 작성자 */
+.reply-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* 댓글 번호 */
+.reply-no {
+    font-size: 13px;
+    color: #888;
+}
+
+/* 작성자 */
+.reply-writer {
+    font-weight: bold;
+    color: #4f46e5;
+}
+
+/* 댓글 내용 */
+.reply-text {
+    margin: 8px 0 12px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* 작성 날짜 */
+.reply-date {
+    font-size: 13px;
+    color: #999;
 }
 </style>
 </head>
@@ -106,7 +206,7 @@ span.material-symbols-outlined {
 		        (댓글수를 클릭하면 댓글 목록이 보여요~)
 		      </div>
 		      <!-- 해당 게시글의 댓글 정보를  ajax 가져와서 출력 -->
-		      <div class="replyList" style="border:1px solid blue;padding: 10px;">
+		      <div class="replyList">
 		      </div>
 		   </div>
 			
@@ -134,11 +234,16 @@ span.material-symbols-outlined {
             $(".replyCount").html(" Reply Count : " + arr.length);
             $.each(arr, function (idx, reply){
               console.log(reply);
-              str += '  <div class="card-body" data-rno="'+reply.rno+'"><b>'+reply.rno+'</b>';
-              str += '    <h5 class="card-title">'+reply.text+'</h5>';
-              str += '    <h6 class="card-subtitle">'+reply.replyer+'</h6>';
-              str += '    <p>'+formatTime(reply.regDate)+'</p>';
-              str += '  </div>';
+              	str += '  <div class="card-body reply-item" data-rno="' + reply.rno + '">';
+	            str += '    <div class="reply-header">';
+	            str += '      <span class="reply-no">#' + reply.rno + '</span>';
+	            str += '      <span class="reply-writer">' + reply.replyer + '</span>';
+	            str += '    </div>';
+	            str += '    <h5 class="card-title reply-text">' + reply.text + '</h5>';
+	            str += '    <div class="reply-date">';
+	            str += '      🕒 ' + formatTime(reply.regDate);
+	            str += '    </div>';
+	            str += '  </div>';
             }); // $.each(
             
             listGroup.html(str);
@@ -152,8 +257,154 @@ span.material-symbols-outlined {
 			loadJSONData(); 
 		
 		});
+		
+		//[2] 댓글 추가
+		var modal = $(".modal");
+		
+		$(".addReply").on("click", function(){
+			modal.show();
+			
+			//댓글 입력 초기화
+			$('input[name=replyText]').val('');
+			$('input[name=replyer]').val('');
+			//필요없는 버튼 숨기기
+			$("button[class^='reply']").hide();
+			$(".replySave, .replyClose").show();
+		});
+		
+	
+		//[3] 모달창 닫기 replyClose
+		$(".replyClose").on("click", function(){
+			modal.hide();
+		});
+		
+		//[4] 입력한 댓글 저장
+		$(".replySave").on("click", function(){
+			
+			//입력한 댓글내용을 js객체에 저장!
+			var reply = {
+				bno: bno,
+				text: $('input[name=replyText]').val(),
+				replyer: $('input[name=replyer]').val(),
+			};
+			console.log(reply);
+			
+			//Ajax 댓글 등록
+			$.ajax({
+				url: '/replies',
+				method: 'post',
+				data: JSON.stringify(reply), 	//json으로 변환
+				contentType: 'application/json; charset=utf-8',
+				dataType:'json',
+				success:function(data){
+					console.log(data);
+					var newRno = parseInt(data);
+					alert(newRno + "번 댓글이 등록완료 되었습니다!");
+					modal.hide();
+					
+					loadJSONData(); //댓글 목록 Ajax 조회...
+				}
+				
+			});
+			
+		});
+		
+		//[5] 댓글 삭제 _ 수정
+		//	$(".replyList .card-body")
+		$(".replyList").on("click", ".card-body", function(){
+		//data-rno=299
+		var rno = $(this).data("rno");
+		//alert(rno);
+		// 모달창의 input 태그에 ㅌ클릭한 댓글 정보를 출력
+		$("input[name='replyText']").val($(this).find('.card-title').html());
+		$("input[name='replyer']").val($(this).find('.reply-writer').html());
+		$("input[name='rno']").val(rno);
+		
+		//필요한 버튼만 보이게..
+		$("button[class^='reply']").hide();
+        $(".replyRemove, .replyModify, .replyClose").show();
+		
+		modal.show();
+		});
+		
+		//[6] 모달창의 삭제 버튼 출력
+		$(".replyRemove").on("click", function(){
+			var rno= $("input[name='rno']").val();
+			//Ajax 댓글 삭제
+			  //DELETE   /replies/{rno}    
+			$.ajax({
+				url: '/replies/' + rno,
+				method: 'delete', //대소문자 상관x
+			
+				success:function(result){
+					console.log(result);
+					if( result === 'SUCCESS'){
+						alert(rno + "번 댓글이 삭제되었습니다!");
+						modal.hide();
+						loadJSONData(); //댓글 목록 Ajax 조회...
+					}//if
+				}//success
+				
+			}); //ajax
+		}); //replyRemove click
+		
+		
+		//[6] 수정
+		$(".replyModify").on("click", function(){
+			var rno= $("input[name='rno']").val();
+			//입력한 댓글내용을 js객체에 저장!
+			var reply = {
+				bno: bno, //transient 에러 방지
+				rno: rno,
+				text: $('input[name=replyText]').val(),
+				replyer: $('input[name=replyer]').val()
+				
+			};
+			//Ajax 댓글 수정
+			  //PUT   /replies/{rno}    
+			$.ajax({
+				url: '/replies/' + rno,
+				method: 'put', //대소문자 상관x
+				data: JSON.stringify(reply), 	//json으로 변환
+				contentType: 'application/json; charset=utf-8',
+				success:function(result){
+					console.log(result);
+					if( result === 'SUCCESS'){
+						alert(rno + "번 댓글이 수정되었습니다!");
+						modal.hide();
+						loadJSONData(); //댓글 목록 Ajax 조회...
+					}//if
+				}//success
+				
+			}); //ajax
+		}); //replyRemove click
+		
+		
+		
+		
 	}); //$(function(){
 </script>
+
+<!-- START 댓글추가 시 사용할 이용할 모달창 -->
+    <div class="modal" style="border:solid 1px red;padding: 10px;display: none;">
+    <div class="modal-content">
+       <h5>Reply Modal title(댓글 추가 모달창)</h5>
+       <button type="button"><span>&times;</span></button>
+       <br>
+       <input type="text" name="replyText" placeholder="Reply Text...">
+       <br>
+       <input type="text" name="replyer" placeholder="Replyer...">
+       <br>
+       <input type="hidden" name="rno">
+       <br>
+       <button type="button" class="replyRemove">Remove</button>
+       <button type="button" class="replyModify">Modify</button>
+       <button type="button" class="replySave">Save</button>
+       <button type="button" class="replyClose">Close</button>
+       </div>
+    </div>  
+<!-- END 댓글추가 시 사용할 이용할 모달창 -->
+
 
 <script th:inline="javascript">
   var msg = [[${msg}]];
@@ -162,5 +413,7 @@ span.material-symbols-outlined {
      alert("[모달창]"+ msg + "번 글 수정!!!");
   }
 </script>	
+
+
 </body>
 </html>
