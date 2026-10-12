@@ -1,0 +1,54 @@
+1. sb10_security_club- > sb10_security_club2 프로젝트 생성
+	DB 처리 방식
+	
+		이거 빠뜨리지말기 
+	@EnableJpaAuditing
+	public class Sb10SecurityClub2Application {
+	
+	 baseEntity 붙여넣기.
+
+
+
+2. 프로젝트를 위한 JPA 처리....
+	1)회원 Entity: o.d.i.entity.ClubMember.java 생성. 
+		ㄴ fromSocial: 소셜 로그인 처리 후에 회원 가입 유무... (ex) 구글로그인,네이버로그인. 이거 사용해서 로그인했니? 여부.)
+		
+	2)권한(Role):  o.d.i.entity.ClubMemberRole.eNum 생성. 
+		(1) USER					Enum (열거형 타입..)
+		(2)	MANAGER
+		(3) ADMIN
+		
+	3) ClubMember ClubMemberRole 연관관계
+		1		: 		N
+						FK
+						@ManyToOne	
+						
+	4) o.d.i.club.reopsitory.ClubMemberRepository.java 
+		
+		
+	5) 단위 테스트.... 회원을 100명 추가
+		1~80: USER
+		81~90: USER, MANAGER
+		91~100: USER, MANAGER, ADMIN
+
+	6)시큐리티에서 사용할 UserDetailsService 
+		(1) o.d.i.club.security.dto.ClubAuthMemberDTO.java extends User
+		(2)UserDetailsService.loadUserByUserName() 단 하나의 메서드만 오버라이딩.
+									User X 
+		(3)org.doit.ik.club.security.service.ClubUserDetailsService	.java		
+		
+		
+	7) SecurityConfig.java 인메모리 -> ClubUserDetailsService 수정..
+	
+	8)	추가
+		.exceptionHandling(exception -> exception.accessDeniedHandler(accessDeniedHandler()))
+	
+			@Bean	AccessDeniedHandler accessDeniedHandler () {
+		return (request, response, AccessDeniedException) -> {
+			response.sendRedirect("/error/403");
+		} ;
+	}
+	
+	8-2) /error/403 요청을 처리하는 컨트롤러 메서드 선언
+		o.d.i.club.controller.ErrorPageController.java
+	
