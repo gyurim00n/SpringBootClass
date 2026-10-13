@@ -1,0 +1,86 @@
+1. sb11_blog2+
+
+2. 의존성 확인(build.gradle)
+
+3. 엔티티 생성
+	o.d.i.blog.domain.UserDetails 인증 객체
+	
+4. 리포지터리 작성
+	1) org.doit.ik.blog.repository.UserRepository.java 인터페이스
+	
+5. 서비스 생성
+	1) org.doit.ik.blog.service.UserDetailService.java
+	
+6. 시큐리티 설정 추가... : 
+레거시에선ㄴ  security-context.xml...
+이번에는 자바 코딩으로 설정.
+
+	1) org.doit.ik.blog.config.WebSecurityConfig.java 생성
+	
+7. 회원가입 구현...
+	 1) DTO : 사용자 정보를 담고 있는 DTO 객체: org.doit.ik.blog.dto.AddUserRequest.java 
+	 2)	DAO: 필요 x  User repository x
+	 3) Service : org.doit.ik.blog.service.UserService.java
+	 4)	Controller: UserApiController.
+	 5) 회원가입 페이지, 로그인페이지
+	 	login.html
+	 	signup.html
+	 	
+build.gradle ->  jwt 추가 
+// JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    runti*/meOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+    
+ 블로그 서비스에 추가 :	//페이징 새로 추가
+	public Page<Article> findAll(Pageable pageable){
+		return this.blogRepository.findAll(pageable);
+	}
+	
+	
+	o.d.i.controller.BlogViewController.java 수정
+	
+	
+	3)	articleList.html
+		1 2 3 4 >>
+		
+4. JWT 사전 지식..
+	1) 토큰 기반 인증이란..?
+	인증: 1) 서버 기반 인증 			|			2) 토큰기반 인증
+	
+	2)토큰을 전달하고 인증받는 처리 과정 이해.
+	3)토큰 기반 인증의 특징?
+		1)무상태성: 서버에 인증 정보 X ~~ 서버의 자원을 이용할 필요 x (클라이언트에 저장된다.
+		2)확장성: 서버 + 서버 + .... => 인증처리 신경 x.
+		3)무결성: 토큰 발급 후 토큰 정보를 변경하는 행위 할 수 없다.
+	4)JWT
+		1)요청 해더 중에 Authorization 키값에 Bearer + "JWT 토큰값"
+		2) 토큰 구조 : 헤더, 페이로드, 서명
+						토큰 내용의 한 덩어리: 클레임(claim)		 
+						
+	5)리프레스 토큰
+5. JWT 구현하기...
+	1)의존성 모듈 추가 확인 (build.gradle 참고)
+	
+	.
+	2) application.properties
+		# JWT 토큰 생성할때 iss(토큰 발급자), 비밀키, 토큰 만료 기간... 
+		
+		   # JWT
+#이슈발급자
+spring.jwt.issuer=moon@doit.org
+spring.jwt.secret_key=sjJbCjxEpeKsIuEaZHh3gQdw5gP+wmPLtjLkfkqB61s=
+spring.jwt.access-token-expiration=30m
+spring.jwt.refresh-token-expiration=14d 
+		
+		
+		(2)	org.doit.ik.blog.config.jwt.JwtKeyGenerator
+		(3) org.doit.ik.blog.config.jwt.JwtProperties.java
+			app.proper-> JwtProperties ..
+	
+
+	3)org.doit.ik.blog.config.jwt.JwtTokenProvider 
+		1) Access Token 생성, Refresh Token 생성, Secrete key 생성
+		JWT 토큰 유효성 검증, JWT  토큰에서 사용자 정보(claim) 가져오는 기능..
+		AcceessToken 검증, Refresh Token 검증, 토큰-Authentication	
+		토큰- > UserID 반환 등등..

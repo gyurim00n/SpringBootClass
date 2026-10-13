@@ -1,0 +1,111 @@
+1. sb12_thymeleaf_layout 생성
+
+- build.gradle에 추가
+	// ① Thymeleaf Layout: 
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+ 
+
+2. Thymeleaf 자주 사용하는 속성 TOP 15
+| 순위 | 속성 | 설명 | 사용 예 |
+|---:|---|---|---|
+| 1 | th:text          | 텍스트 출력                | th:text="${name}" |
+| 2 | th:each          | 반복문 처리                | th:each="dto : ${list}" |
+| 3 | th:if          | 조건이 참이면 출력         | th:if="${age >= 20}" |
+| 4 | th:unless       | 조건이 거짓이면 출력          | th:unless="${empty}" |
+| 5 | th:href          | 링크 URL 설정             | th:href="@{/board/list}" |
+| 6 | th:src          | 이미지 경로 설정             | th:src="@{/images/logo.png}" |
+| 7 | th:action       | 폼 전송 URL 설정             | th:action="@{/member/join}" |
+| 8 | th:object       | 폼의 기준 객체 지정          | th:object="${memberDTO}" |
+| 9 | th:field          | 폼 필드와 객체 연결          | th:field="*{name}" |
+| 10 | th:value       | 입력 요소의 값 지정          | th:value="${id}" |
+| 11 | th:class       | CSS 클래스 설정             | th:class="${active ? 'on' : 'off'}" |
+| 12 | th:classappend    | 기존 클래스에 추가          | th:classappend="${active} ? ' active'" |
+| 13 | th:style       | 인라인 CSS 설정             | th:style="'color:red'" |
+| 14 | th:with          | 지역 변수 선언             | th:with="total=${list.size()}" |
+| 15 | th:onclick       | 클릭 이벤트에 JavaScript 연결 | th:onclick="|location.href='@{/board/list}'|" | 
+    
+3. 화면 구성에 자주 사용하는 속성
+화면 구성 속성은 공통 레이아웃, 헤더, 메뉴, 본문, 푸터 등을 구성할 때 사용합니다. 
+특히 th:replace, th:insert, th:fragment는 여러 페이지에서 공통 HTML을 재사용할 때 중요합니다.
+
+속성   주요 역할   예시
+
+1) th:fragment:   재사용할 HTML *조각* 정의   th:fragment="header"
+2) th:replace:    요소 전체를 다른 조각으로 교체   th:replace="~{layout/header :: header}"
+3) th:insert:     요소 내부에 조각 삽입   th:insert="~{layout/footer :: footer}"
+4) th:remove:     HTML 요소 제거   th:remove="all"
+5) th:block:      별도 HTML 태그 없이 Thymeleaf 로직 처리   <th:block th:each="dto : ${list}">
+6) th:assert:     조건을 검증하고 실패 시 오류 발생   th:assert="${dto != null}"
+7) layout:decorate:   Layout Dialect의 공통 레이아웃 지정   layout:decorate="~{layout/layout}"
+8) layout:fragment:   Layout Dialect에서 본문 영역 지정   layout:fragment="content"
+
+layout:decorate, layout:fragment는 기본 Thymeleaf 속성이 아니라 Thymeleaf Layout Dialect에서 제공하는 속성입니다.  
+  
+4. Thymeleaf 표현식 종류 TOP 6
+속성과 표현식은 서로 다른 개념입니다. th:text는 속성이고, ${name}은 표현식입니다.
+표현식   이름            설명                           예시
+${...}   변수 표현식         Model 데이터 접근                  ${member.name}
+*{...}   선택 변수 표현식   th:object로 지정한 객체의 필드 접근      *{name}
+@{...}   링크 URL 표현식      URL과 쿼리 매개변수 생성            @{/board/read(bno=10)}
+#{...}   메시지 표현식      다국어 메시지 파일의 값 조회         #{welcome.message}
+
+        ~{...}   조각 표현식         템플릿 조각 지정                  ~{layout/header :: header}
+        [[...]]   인라인 텍스트 표현   HTML 텍스트 안에서 값 출력            [[${name}]]
+
+5. static 폴더 : w3ss_layout_flexbox.html
+
+6. 프로젝트 폴더 구조
+	
+  sb12_thymeleaf_layout
+   ├── src/main/java
+   │   └── org/doit/ik
+   │       ├── Sb12ThymeleafLayoutApplication.java
+   │       ├── controller
+   │       │     └──  IndexController.java  
+   │       ├── city 
+   │             └── controller
+   │                  └── CityController.java
+   └── src/main/resources
+       ├── templates
+       │   ├── index.html
+       │   ├── layout 폴더
+       │   │	├── city 폴더
+       │   │   		└── layout.html   
+       │   ├── layout.html   // 메인의 템플릿 파일
+       │   ├── fragments 폴더
+       │   │   ├── header.html
+       │   │   ├── footer.html
+       │   │   └── city 폴더 
+       │   │          └── nav.html
+       │   └── city 폴더
+       │       ├── london.html
+       │       ├── paris.html
+       │       └── seoul.html
+       └── static 폴더
+           ├── css
+           │   ├── city 폴더
+           │   │        └── cityflexbox.css
+           │   └── flexbox.css
+           ├── images
+           │   ├── SiSt.ico
+           │   └── city 폴더
+
+
+
+
+
+  (1) layout:title-pattern="$CONTENT_TITLE - Cities"
+     ㄴ 자식 페이지의 제목과 공통 사이트 제목을 조합하여 최종 HTML 페이지 제목을 만드는 설정
+     ㄴ layout:title-pattern:    페이지 제목을 조합하는 패턴을 지정
+     ㄴ $CONTENT_TITLE:         자식 페이지에서 정의한 제목으로 대체
+     ㄴ "- Cities"    : 모든 페이지 제목 뒤에 공통으로 붙는 문자열
+  
+  (2) layout:fragment="content"
+       ㄴ 자식 페이지의 HTML 내용을 부모 레이아웃의 지정된 영역에 삽입하기 위해 사용하는 속성
+       
+  (3) layout:decorate="~{layout/city/layout}"
+       ㄴ 재 HTML 페이지에 부모 레이아웃인 layout.html을 적용.
+
+
+

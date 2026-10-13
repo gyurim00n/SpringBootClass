@@ -1,0 +1,40 @@
+1. sb11_blog2_security 프로젝트 CV
+
+  - Spring Securuty
+
+2. 의존성 확인 ( build.gralde 파일 ) 
+  implementation 'org.springframework.boot:spring-boot-starter-security'  
+  implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+  testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
+
+3. 엔티티 생성
+    1) o.d.i.blog.domain.User.java: extends UserDetails  인증객체로 사용됨.  UserDetails 인증 객체
+
+4. 리포지터리 생성
+   1) org.doit.ik.blog.repository.UserRepository.java
+   
+5. 서비스 생성
+	1) org.doit.ik.blog.service.UserDetailService.java
+
+6. 시큐리티 설정 추가: security-context.xml X
+                   자바코딩설정. 
+    1) org.doit.ik.blog.config.WebSecurityConfig.java
+
+7. 회원가입 구현
+    1) DTO: org.doit.ik.blog.dto.AddUserRequest.java 
+
+    2) DAO: UserRepository X
+	3) Service: org.doit.ik.blog.service.UserService.java
+	4) Controller: org.doit.ik.blog.controller.UserApiController.java 컨트롤러 
+
+    5) 회원가입 페이지, 로그인 페이지 
+       login.html
+       singup.html
+
+8. 테스트
+    1) UserViewController.java 추가
+
+
+
+   
+    

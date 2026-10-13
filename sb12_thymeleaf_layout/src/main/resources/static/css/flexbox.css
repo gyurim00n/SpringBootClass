@@ -1,0 +1,86 @@
+@charset "UTF-8";
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+body > header {
+    background-color: #666;
+    color: white;
+    padding: 20px;
+}
+
+body > section {
+    display: flex;
+    min-height: 400px;
+}
+
+body > section > nav {
+    flex: 0 0 220px;
+    background-color: #f1f1f1;
+    padding: 20px;
+}
+
+body > section > nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+body > section > nav li {
+    margin-bottom: 15px;
+}
+
+body > section > nav a {
+    color: #222;
+    text-decoration: none;
+}
+
+body > section > nav a:hover {
+    color: #007bff;
+}
+
+body > section > main {
+    flex: 1;
+    padding: 24px;
+}
+
+body > footer {
+    background-color: #ddd;
+    padding: 20px;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    body > section {
+        flex-direction: column;
+    }
+
+    body > section > nav {
+        flex-basis: auto;
+    }
+}
+
+
+
+/* 기본 링크 색상 */
+nav a {
+    color: #333;
+    text-decoration: none;
+}
+
+/* 마우스를 올렸을 때 */
+nav a:hover {
+    color: #007bff;
+}
+
+/* 현재 선택된 페이지 */
+nav a.active {
+    color: #e63946;
+    font-weight: bold;
+}

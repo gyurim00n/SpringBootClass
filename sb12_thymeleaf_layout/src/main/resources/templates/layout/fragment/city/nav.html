@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+  <nav th:fragment="nav">
+    <ul>
+      <li><a th:href="@{/city/london}"
+      	  th:classappend="${requestURI == '/city/london' ? 'active': ''}">London</a>
+      <li><a th:href="@{/city/paris}"
+      	  th:classappend="${requestURI == '/city/paris' ? 'active': ''}">Paris</a>
+      <li><a th:href="@{/city/seoul}"
+      	  th:classappend="${requestURI == '/city/seoul' ? 'active': ''}">Seoul</a>
+
+    </ul>
+  </nav>
+</body>
+</html>

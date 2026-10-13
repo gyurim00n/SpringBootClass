@@ -1,0 +1,58 @@
+@charset "UTF-8";
+
+/* 도시 카드 가로 정렬 */
+.city-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+/* 도시 카드 */
+.city-card {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: white;
+    color: #222;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s;
+}
+
+/* 이미지 크기 */
+.city-card img {
+    display: block;
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+}
+
+/* 도시 이름 */
+.city-card h2 {
+    margin: 0;
+    padding: 16px;
+}
+
+/* 마우스 효과 */
+.city-card:hover {
+    transform: translateY(-5px);
+}
+
+/* 작은 화면에서는 세로 정렬 */
+@media (max-width: 600px) {
+    .city-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .city-card {
+        width: 100%;
+        max-width: 360px;
+    }
+}

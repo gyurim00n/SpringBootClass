@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" type="image/x-icon"  th:href="@{/images/SiSt.ico}">
+<title layout:title-pattern="$CONTENT_TITLE - Cities">Index</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/flexbox.css}">
+<link rel="stylesheet" th:href="@{/css/city/cityflexbox.css}">
+
+
+</head>
+<body>
+	<header th:replace="~{fragments/header::header}"></header>
+	<section>
+		<main layout:fragment="content">
+			<h1>Home Design</h1>
+		</main>
+	</section>
+	
+	<footer th:replace="~{fragments/footer::footer}"></footer>
+</body>
+</html>
